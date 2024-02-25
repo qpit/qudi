@@ -614,7 +614,8 @@ class Manager(QtCore.QObject):
         loaded_module = self.tree['loaded'][base][mkey]
         if 'connect' not in thismodule:
             return 0
-        if not isinstance(loaded_module.connectors, OrderedDict):
+        if (not isinstance(loaded_module.connectors, OrderedDict) and
+                not isinstance(loaded_module.connectors, dict)):
             logger.error('Connectors attribute of module {0}.{1} is not a '
                          'dictionary.'.format(base, mkey))
             return -1
@@ -623,7 +624,8 @@ class Manager(QtCore.QObject):
                          'is broken: no module defined.'.format(
                 base, mkey))
             return -1
-        if not isinstance(thismodule['connect'], OrderedDict):
+        if (not isinstance(thismodule['connect'], OrderedDict) and
+                not isinstance(thismodule['connect'], dict)):
             logger.error('Connection configuration of module {0}.{1} '
                          'is broken: connect is not a dictionary.'
                          ''.format(base, mkey))
@@ -779,7 +781,7 @@ class Manager(QtCore.QObject):
             else:
                 try:
                     # class_name is the last part of the config entry
-                    class_name = re.split('\.', defined_module['module.Class'])[-1]
+                    class_name = re.split(r'\.', defined_module['module.Class'])[-1]
                     # module_name is the whole line without this last part (and
                     # with the trailing dot removed also)
                     module_name = re.sub(
@@ -866,7 +868,7 @@ class Manager(QtCore.QObject):
                 # reload config part associated with module
                 self.reloadConfigPart(base, key)
                 # class_name is the last part of the config entry
-                class_name = re.split('\.', defined_module['module.Class'])[-1]
+                class_name = re.split(r'\.', defined_module['module.Class'])[-1]
                 # module_name is the whole line without this last part (and
                 # with the trailing dot removed also)
                 module_name = re.sub(
@@ -1083,7 +1085,8 @@ class Manager(QtCore.QObject):
         defined_module = self.tree['defined'][base][key]
         if 'connect' not in defined_module:
             return dict()
-        if not isinstance(defined_module['connect'], OrderedDict):
+        if (not isinstance(defined_module['connect'], OrderedDict) and
+                not isinstance(defined_module['connect'], dict)):
             logger.error('{0} module {1}: connect is not a dictionary'.format(base, key))
             return None
         connections = defined_module['connect']
